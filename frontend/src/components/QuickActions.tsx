@@ -6,9 +6,10 @@ export type QuickActionProps = {
   onIncome: () => void;
   onExpense: () => void;
   onTransfer: () => void;
+  onScan: () => void;
 };
 
-export function QuickActions({ onIncome, onExpense, onTransfer }: QuickActionProps) {
+export function QuickActions({ onIncome, onExpense, onTransfer, onScan }: QuickActionProps) {
   return (
     <View style={styles.row}>
       <ActionButton
@@ -31,6 +32,13 @@ export function QuickActions({ onIncome, onExpense, onTransfer }: QuickActionPro
         icon="repeat"
         color={colors.brandPrimary}
         onPress={onTransfer}
+      />
+      <ActionButton
+        testID="quick-action-scan"
+        label="Scontrino"
+        icon="camera"
+        color={colors.info}
+        onPress={onScan}
       />
     </View>
   );
@@ -56,7 +64,7 @@ function ActionButton({
       style={({ pressed }) => [styles.btn, pressed && { opacity: 0.7 }]}
     >
       <View style={[styles.iconWrap, { backgroundColor: color + "22", borderColor: color + "44" }]}>
-        <FeatherIcon name={icon as any} color={color} size={22} />
+        <FeatherIcon name={icon as any} color={color} size={20} />
       </View>
       <Text style={styles.label}>{label}</Text>
     </Pressable>
@@ -66,17 +74,17 @@ function ActionButton({
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
-    gap: spacing.md,
+    gap: spacing.sm,
     paddingHorizontal: spacing.lg,
   },
   btn: {
     flex: 1,
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
   iconWrap: {
-    width: 56,
-    height: 56,
+    width: 52,
+    height: 52,
     borderRadius: radius.lg,
     alignItems: "center",
     justifyContent: "center",
@@ -84,7 +92,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.onSurface,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "600",
   },
 });

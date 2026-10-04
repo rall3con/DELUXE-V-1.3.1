@@ -154,6 +154,7 @@ export default function HomeScreen() {
             onIncome={() => txSheetRef.current?.open("income")}
             onExpense={() => txSheetRef.current?.open("expense")}
             onTransfer={() => txSheetRef.current?.open("transfer")}
+            onScan={() => router.push("/receipt-scan")}
           />
         </View>
 

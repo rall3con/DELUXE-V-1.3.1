@@ -78,9 +78,28 @@ Mobile app (Expo React Native) for personal money management with a central bala
 - Multi-conto formale (carte separate oltre a sezioni).
 - Report mensile PDF.
 
+## Config server (added)
+- `src/config.ts` è l'unico punto che decide dove inviare le chiamate API. Esporta `getBackendUrl()`, `setBackendUrlOverride()`, `apiUrl(path)`.
+- Dall'app: *Impostazioni → Server* permette di sovrascrivere l'URL a runtime (salvato in AsyncStorage, sopravvive ai riavvii) o ripristinare il default.
+- Per self-host: modifica `DEFAULT_BACKEND_URL` in `src/config.ts` oppure usa l'override da UI. Istruzioni in `backend/README.md`.
+
+## Scanner scontrini con Gemini (added)
+- Nuova quick action "Scontrino" sulla Home (icona camera, accento blu).
+- Flusso `/receipt-scan`:
+  1. Scegli fotocamera o galleria (`expo-image-picker` con permessi iOS/Android dichiarati in `app.json`).
+  2. L'immagine viene codificata base64 e inviata direttamente a Google Generative Language API (`gemini-3-flash-preview` default; selezionabile anche 3.5 Flash, 3.1 Pro, 2.5 Flash).
+  3. Gemini risponde con JSON strutturato: `store`, `date`, `items[]`, `total`. Prompt forzato in italiano con `responseMimeType=application/json`.
+  4. Schermata di revisione: tutte le righe editabili (nome, prezzo, quantità). Se una riga ha prezzo mancante o 0, è evidenziata in rosso ("⚠ Correggi questa riga") e il bottone Salva è disabilitato.
+  5. Prima di salvare, conferma modale con riepilogo totale + nome supermercato.
+  6. Il movimento viene salvato come uscita con `receipt: { store, items[], scannedAt, imageUri }`; totale = somma delle righe convertita in EUR.
+- La chiave API Gemini viene salvata **solo sul dispositivo** in `expo-secure-store` (AsyncStorage su web); nulla transita per i server dell'app. UI in *Impostazioni → Scanner scontrini*.
+- Lista movimenti: le voci con scontrino mostrano badge `file-text`, titolo = nome supermercato, sottotitolo = "categoria · N voci · sezione". Tap su una voce → `/transaction/[id]`:
+  - Dettaglio bello con importo grande, data/sezione/categoria.
+  - Elenco completo articoli con prezzo per riga + totale finale.
+  - Bottone elimina con conferma.
+
 ## Not implemented (user chose "No AI", "No auth")
 - Login / sync between devices.
-- AI categorisation.
 - Push notifications.
 
 ## Business enhancement idea

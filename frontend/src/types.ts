@@ -53,6 +53,19 @@ export interface Section {
   createdAt: string;
 }
 
+export interface ReceiptItem {
+  name: string;
+  price: number; // EUR
+  qty?: number;
+}
+
+export interface ReceiptMeta {
+  store: string;
+  items: ReceiptItem[];
+  scannedAt: string;
+  imageUri?: string; // optional local file URI (not persisted across devices)
+}
+
 export interface Transaction {
   id: string;
   type: TxType;
@@ -62,6 +75,7 @@ export interface Transaction {
   sectionId: string;
   toSectionId?: string;
   createdAt: string;
+  receipt?: ReceiptMeta;
 }
 
 export interface AppState {

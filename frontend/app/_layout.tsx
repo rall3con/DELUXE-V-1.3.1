@@ -10,6 +10,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import { ErrorBoundary } from "@/src/components/error-boundary";
 import { LockGate } from "@/src/components/LockGate";
+import { initBackendUrl } from "@/src/config";
 import { processRecurring } from "@/src/store";
 import { queryClient } from "@/src/query-client";
 
@@ -17,7 +18,10 @@ LogBox.ignoreAllLogs(true);
 
 export default function RootLayout() {
   useEffect(() => {
-    processRecurring().catch(() => {});
+    (async () => {
+      await initBackendUrl();
+      await processRecurring().catch(() => {});
+    })();
   }, []);
 
   return (

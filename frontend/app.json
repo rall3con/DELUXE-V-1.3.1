@@ -11,7 +11,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.emergent.wallettracker.d61t03",
       "infoPlist": {
-        "NSFaceIDUsageDescription": "Sblocca l'app con Face ID"
+        "NSFaceIDUsageDescription": "Sblocca l'app con Face ID",
+        "NSCameraUsageDescription": "Fotografa gli scontrini per registrarli",
+        "NSPhotoLibraryUsageDescription": "Scegli uno scontrino dalla galleria"
       }
     },
     "android": {
@@ -19,7 +21,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.emergent.wallettracker.d61t03"
+      "package": "com.emergent.wallettracker.d61t03",
+      "permissions": ["android.permission.CAMERA", "android.permission.READ_MEDIA_IMAGES"]
     },
     "web": {
       "bundler": "metro",
@@ -47,6 +50,13 @@
         "expo-local-authentication",
         {
           "faceIDPermission": "Sblocca l'app con Face ID"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Scegli uno scontrino dalla galleria",
+          "cameraPermission": "Fotografa gli scontrini per registrarli"
         }
       ]
     ],

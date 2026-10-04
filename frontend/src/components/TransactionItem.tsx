@@ -1,4 +1,5 @@
 import FeatherIcon from "@react-native-vector-icons/feather";
+import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors, radius, spacing } from "@/src/theme";
 import { Transaction, resolveCategory } from "@/src/types";
@@ -18,9 +19,11 @@ export function TransactionItem({
 }) {
   const { format } = useCurrency();
   const state = useAppState();
+  const router = useRouter();
   const isIncome = tx.type === "income";
   const isExpense = tx.type === "expense";
   const isTransfer = tx.type === "transfer";
+  const hasReceipt = !!tx.receipt;
 
   const accent = isIncome
     ? colors.brandTertiary
@@ -29,10 +32,20 @@ export function TransactionItem({
     : colors.brandPrimary;
 
   const resolved = resolveCategory(tx.category, state?.categories);
-  const iconName = isTransfer ? "repeat" : (resolved.icon as any);
-  const title = isTransfer ? `Trasferimento` : resolved.name;
+  const iconName = isTransfer
+    ? "repeat"
+    : hasReceipt
+    ? "shopping-bag"
+    : (resolved.icon as any);
+  const title = isTransfer
+    ? `Trasferimento`
+    : hasReceipt
+    ? tx.receipt!.store
+    : resolved.name;
   const subtitle = isTransfer
     ? `${sectionName} → ${destName ?? "?"}`
+    : hasReceipt
+    ? `${resolved.name} · ${tx.receipt!.items.length} voci · ${sectionName}`
     : sectionName;
 
   const sign = isIncome ? "+" : isExpense ? "-" : "";
@@ -44,6 +57,7 @@ export function TransactionItem({
 
   return (
     <Pressable
+      onPress={() => router.push({ pathname: "/transaction/[id]", params: { id: tx.id } })}
       onLongPress={onLongPress}
       delayLongPress={400}
       style={({ pressed }) => [styles.row, pressed && { opacity: 0.75 }]}
@@ -53,9 +67,16 @@ export function TransactionItem({
         <FeatherIcon name={iconName} color={accent} size={18} />
       </View>
       <View style={styles.body}>
-        <Text style={styles.title} numberOfLines={1}>
-          {title}
-        </Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          {hasReceipt && (
+            <View style={styles.receiptBadge} testID={`receipt-badge-${tx.id}`}>
+              <FeatherIcon name="file-text" size={10} color={colors.brandPrimary} />
+            </View>
+          )}
+        </View>
         <Text style={styles.subtitle} numberOfLines={1}>
           {subtitle} · {dateStr}
         </Text>
@@ -98,10 +119,26 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 2,
   },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
   title: {
     color: colors.onSurface,
     fontSize: 14,
     fontWeight: "600",
+    flexShrink: 1,
+  },
+  receiptBadge: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.brandPrimary + "22",
+    borderWidth: 1,
+    borderColor: colors.brandPrimary + "44",
+    alignItems: "center",
+    justifyContent: "center",
   },
   subtitle: {
     color: colors.muted,

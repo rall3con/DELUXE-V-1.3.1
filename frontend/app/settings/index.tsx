@@ -72,6 +72,22 @@ export default function SettingsIndex() {
       route: "/settings/security",
       accent: colors.brandSecondary,
     },
+    {
+      testID: "settings-ai",
+      icon: "camera",
+      title: "Scanner scontrini",
+      sub: "Chiave Gemini per leggere scontrini",
+      route: "/settings/ai",
+      accent: colors.info,
+    },
+    {
+      testID: "settings-server",
+      icon: "server",
+      title: "Server",
+      sub: "URL del backend (Emergent o self-host)",
+      route: "/settings/server",
+      accent: colors.info,
+    },
   ];
 
   return (
